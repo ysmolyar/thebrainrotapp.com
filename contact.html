@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>contact us | brainrot app - get in touch</title>
+    <meta name="description" content="have questions about brainrot? get in touch with our team. we're here to help with your screen time management needs.">
+    <meta name="keywords" content="contact, support, brainrot app, screen time, customer service, app help">
+    
+    <!-- favicon -->
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    
+    <!-- open graph / facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://thebrainrotapp.com/contact.html">
+    <meta property="og:title" content="contact brainrot app team">
+    <meta property="og:description" content="have questions about the brainrot app? we're here to help.">
+    <meta property="og:image" content="https://thebrainrotapp.com/images/og-image.jpg">
+    
+    <!-- twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://thebrainrotapp.com/contact.html">
+    <meta property="twitter:title" content="contact brainrot app team">
+    <meta property="twitter:description" content="have questions about the brainrot app? we're here to help.">
+    <meta property="twitter:image" content="https://thebrainrotapp.com/images/og-image.jpg">
+    
+    <!-- canonical url -->
+    <link rel="canonical" href="https://thebrainrotapp.com/contact.html">
+    
+    <!-- stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="hero">
+            <h2 class="logo">contact us</h2>
+        </header>
+        
+        <main class="contact-content">
+            <p class="contact-intro">have a question or feedback about brainrot? we'd love to hear from you.</p>
+            
+            <div class="contact-form-container">
+                <form action="https://api.web3forms.com/submit" method="POST" class="contact-form">
+                    <!-- Replace with your Access Key -->
+                    <input type="hidden" name="access_key" value="c8aa09cb-034f-4225-84cb-c82a98315f55">
+
+                    <div class="form-group">
+                        <label for="name">name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">message</label>
+                        <textarea id="message" name="message" required></textarea>
+                    </div>
+
+                    <!-- Honeypot Spam Protection -->
+                    <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+
+                    <!-- Custom Confirmation / Success Page -->
+                    <input type="hidden" name="redirect" value="https://thebrainrotapp.com/thanks.html">
+
+                    <button type="submit" class="submit-button">send message</button>
+                </form>
+            </div>
+        </main>
+        
+        <footer>
+            <nav class="footer-links">
+                <a href="index.html">home</a>
+                <a href="privacy.html">privacy</a>
+                <a href="terms.html">terms</a>
+                <a href="contact.html">contact</a>
+            </nav>
+            <p class="copyright">&copy; 2025 brainrot. all rights reserved.</p>
+        </footer>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
