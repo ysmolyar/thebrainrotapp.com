@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>brainrot - Redirecting to App Store</title>
+    <meta name="description" content="Redirecting to brainrot app on the App Store">
+    
+    <!-- Immediate redirect via meta refresh (backup method) -->
+    <meta http-equiv="refresh" content="0;url=https://apps.apple.com/us/app/brainrot-screen-time-control/id6744338972">
+    
+    <!-- favicon -->
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    
+    <!-- Prevent indexing of redirect page -->
+    <meta name="robots" content="noindex, nofollow">
+    
+    <!-- Minimal styling for fallback -->
+    <style>
+        body {
+            font-family: 'Helvetica', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #FDF6E3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+            color: #333;
+        }
+        
+        .redirect-container {
+            max-width: 400px;
+            padding: 2rem;
+        }
+        
+        .loading-spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #222;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .fallback-link {
+            color: #007AFF;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 1rem;
+            display: inline-block;
+        }
+        
+        .fallback-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="redirect-container">
+        <div class="loading-spinner"></div>
+        <h2>Redirecting to App Store...</h2>
+        <p>Taking you to download brainrot</p>
+        
+        <!-- Fallback link in case redirect fails -->
+        <p>
+            <a href="https://apps.apple.com/us/app/brainrot-screen-time-control/id6744338972" class="fallback-link">
+                Click here if you're not redirected automatically
+            </a>
+        </p>
+    </div>
+
+    <script>
+        // Immediate JavaScript redirect (primary method)
+        window.location.replace('https://apps.apple.com/us/app/brainrot-screen-time-control/id6744338972');
+        
+        // Backup redirect after 1 second
+        setTimeout(function() {
+            window.location.href = 'https://apps.apple.com/us/app/brainrot-screen-time-control/id6744338972';
+        }, 1000);
+    </script>
+    
+    <!-- Analytics -->
+    <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html> 
