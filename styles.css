@@ -106,6 +106,25 @@ body {
     border-radius: 3px;
 }
 
+.hero-cta {
+    margin-top: 4rem;
+    margin-bottom: -2rem;
+}
+
+.hero-cta .app-store-badge {
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.hero-cta .app-store-badge:hover {
+    transform: scale(1.05);
+}
+
+.hero-cta .app-store-badge img {
+    height: 50px;
+    width: auto;
+}
+
 #app-demo {
     width: 101%;
     height: 101%;
