@@ -607,6 +607,10 @@ footer {
     .hero-cta .app-store-badge img {
         height: 35px;
     }
+
+    .app-store-badge img {
+        height: 35px;
+    }
 }
 
 /* Animation for subtle hover effects */
