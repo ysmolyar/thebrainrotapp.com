@@ -60,33 +60,12 @@ body {
     padding: 0 20px;
 }
 
-/* Product Hunt Banner */
-.product-hunt-banner {
-    text-align: center;
-    padding-top: 2rem;
-    margin-bottom: -5.25rem;
-    position: relative;
-    z-index: 10;
-}
-
-.product-hunt-banner a {
-    display: inline-block;
-    transition: transform 0.3s ease;
-}
-
-.product-hunt-banner a:hover {
-    transform: scale(1.05);
-}
-
-.product-hunt-banner img {
-    height: 43px;
-    width: auto;
-}
+/* Product Hunt Banner - removed */
 
 /* Hero section */
 .hero {
     text-align: center;
-    padding: 5rem 1rem;
+    padding: 2rem 1rem 5rem;
 }
 
 .logo {
@@ -114,7 +93,7 @@ body {
 }
 
 .reviews-image {
-    margin: 1rem 0;
+    margin: 2rem 0 0.5rem 0;
 }
 
 .reviews-image img {
@@ -194,7 +173,7 @@ body {
 }
 
 .hero-cta .app-store-badge img {
-    height: 40px;
+    height: 50px;
     width: auto;
 }
 
@@ -297,7 +276,7 @@ body {
 }
 
 .app-store-badge img {
-    height: 40px;
+    height: 50px;
     transition: transform 0.3s ease;
 }
 
@@ -533,14 +512,6 @@ footer {
         font-size: 1.25rem;
     }
     
-    .product-hunt-banner {
-        padding-top: 1rem;
-        margin-bottom: -1rem;
-    }
-    
-    .product-hunt-banner img {
-        height: 35px;
-    }
     
     .hero {
         padding: 1rem 1rem;
@@ -602,10 +573,6 @@ footer {
         font-size: 1.1rem;
     }
     
-    .product-hunt-banner {
-        padding-top: 0.5rem;
-        margin-bottom: -0.5rem;
-    }
     
     .hero {
         padding: 1rem 0;
