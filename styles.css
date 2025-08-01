@@ -14,13 +14,73 @@ body {
     color: #333;
     background-color: #FDF6E3;
     overflow-x: hidden;
-    text-transform: lowercase;
+}
+
+/* Site Header */
+.site-header {
+    padding: 1.5rem 0;
+    background: transparent;
+}
+
+.header-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+}
+
+.brand:hover {
+    opacity: 0.8;
+}
+
+.brand-icon {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+}
+
+.brand-text {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #000;
+    letter-spacing: -0.5px;
+    padding-left: -0.5rem;
 }
 
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
+}
+
+/* Product Hunt Banner */
+.product-hunt-banner {
+    text-align: center;
+    padding-top: 2rem;
+    margin-bottom: -5.25rem;
+    position: relative;
+    z-index: 10;
+}
+
+.product-hunt-banner a {
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.product-hunt-banner a:hover {
+    transform: scale(1.05);
+}
+
+.product-hunt-banner img {
+    height: 43px;
+    width: auto;
 }
 
 /* Hero section */
@@ -33,25 +93,34 @@ body {
     font-size: 3.5rem;
     font-weight: 900;
     color: #000;
-    margin-bottom: 0.5rem;
     letter-spacing: -1px;
-    text-transform: lowercase;
 }
 
 .tagline {
-    font-size: 2.2rem;
+    font-size: 3.5rem;
     font-weight: 600;
     color: #ff4757;
     margin-bottom: 1rem;
-    letter-spacing: -0.5px;
+    letter-spacing: -1px;
+    margin-top: -1rem;
 }
 
 .subtitle {
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: 400;
     color: #666;
     max-width: 600px;
     margin: 0 auto;
+}
+
+.reviews-image {
+    margin: 1rem 0;
+}
+
+.reviews-image img {
+    max-width: 150px;
+    width: 100%;
+    height: auto;
 }
 
 /* iPhone showcase */
@@ -107,8 +176,12 @@ body {
 }
 
 .hero-cta {
-    margin-top: 4rem;
+    margin-top: 2rem;
     margin-bottom: -2rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
 }
 
 .hero-cta .app-store-badge {
@@ -121,7 +194,7 @@ body {
 }
 
 .hero-cta .app-store-badge img {
-    height: 50px;
+    height: 40px;
     width: auto;
 }
 
@@ -224,7 +297,7 @@ body {
 }
 
 .app-store-badge img {
-    height: 50px;
+    height: 40px;
     transition: transform 0.3s ease;
 }
 
@@ -447,21 +520,59 @@ footer {
 
 /* Media Queries */
 @media (max-width: 768px) {
+    .site-header {
+        padding: 1rem 0;
+    }
+    
+    .brand-icon {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .brand-text {
+        font-size: 1.25rem;
+    }
+    
+    .product-hunt-banner {
+        padding-top: 1rem;
+        margin-bottom: -1rem;
+    }
+    
+    .product-hunt-banner img {
+        height: 35px;
+    }
+    
     .hero {
-        padding: 3rem 1rem;
+        padding: 1rem 1rem;
     }
     
     .logo {
-        font-size: 2.5rem;
+        font-size: 1.6rem;
     }
     
     .tagline {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
+        margin-top: 0;
+        margin-bottom: 0.8rem;
+    }
+    
+    .subtitle {
+        font-size: 1rem;
+        padding: 0 1rem;
+    }
+    
+    .reviews-image img {
+        max-width: 130px;
     }
     
     .hero-cta {
-        margin-top: 2.5rem;
+        margin-top: 1.5rem;
         margin-bottom: 0;
+        flex-wrap: wrap;
+    }
+    
+    .hero-cta .app-store-badge img {
+        height: 40px;
     }
     
     .features {
@@ -470,6 +581,64 @@ footer {
     
     .feature {
         margin-bottom: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 10px;
+    }
+    
+    .header-container {
+        padding: 0 10px;
+    }
+    
+    .brand-icon {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .brand-text {
+        font-size: 1.1rem;
+    }
+    
+    .product-hunt-banner {
+        padding-top: 0.5rem;
+        margin-bottom: -0.5rem;
+    }
+    
+    .hero {
+        padding: 1rem 0;
+    }
+    
+    .logo {
+        font-size: 1.5rem;
+        line-height: 1.2;
+        margin-bottom: 0.1rem;
+        white-space: normal;
+        padding: 0;
+    }
+    
+    .tagline {
+        font-size: 1.5rem;
+        line-height: 1.2;
+    }
+    
+    .subtitle {
+        font-size: 0.8rem;
+    }
+    
+    .reviews-image img {
+        max-width: 100px;
+    }
+    
+    .hero-cta {
+        gap: 0.5rem;
+        padding-top: -1rem;
+    }
+    
+    .hero-cta .app-store-badge img {
+        height: 35px;
     }
 }
 
