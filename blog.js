@@ -1,6 +1,15 @@
 // Blog posts data
 const blogPosts = [
     {
+        title: "Brain Rot: From Thoreau to TikTok - Oxford's 2024 Word of the Year",
+        date: "2025-08-04",
+        excerpt: "Discover the fascinating journey of 'brain rot' from Henry David Thoreau's 1854 coinage to Oxford's 2024 Word of the Year. Learn about its meaning, Gen Z impact, and societal effects.",
+        url: "blog/2025-08-04-brain-rot-oxford-word-year.html",
+        readTime: "8 min",
+        author: "Yoni Smolyar",
+        authorUrl: "author/yoni-smolyar.html"
+    },
+    {
         title: "The Complete Guide to Digital Detox",
         date: "2025-08-02",
         excerpt: "Learn how to successfully complete a digital detox and reset your relationship with technology.",
