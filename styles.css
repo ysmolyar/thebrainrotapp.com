@@ -367,7 +367,6 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     font-family: inherit;
-    text-transform: lowercase;
     font-weight: 500;
     margin-top: 1rem;
     align-self: center;
@@ -425,7 +424,6 @@ body {
     display: inline-block;
     transition: all 0.3s ease;
     font-family: inherit;
-    text-transform: lowercase;
     font-weight: 500;
 }
 
