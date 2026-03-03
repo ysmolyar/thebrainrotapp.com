@@ -135,11 +135,19 @@
                 const card = document.createElement('div');
                 card.className = 'sub-card';
                 const date = new Date(portal.created * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-                const label = portals.length > 1 ? `Account ${i + 1}` : 'Your Subscription';
 
+                let label;
+                if (portal.planName) {
+                    const price = portal.planPrice ? `$${(portal.planPrice / 100).toFixed(2)}/${portal.planInterval || 'month'}` : '';
+                    label = price ? `${portal.planName} — ${price}` : portal.planName;
+                } else {
+                    label = portals.length > 1 ? `Account ${i + 1}` : 'Your Subscription';
+                }
+
+                const statusText = portal.subStatus === 'trialing' ? ' · Trial' : '';
                 card.innerHTML = `
                     <div class="sub-card-header">${label}</div>
-                    <div class="sub-card-detail">Created ${date}</div>
+                    <div class="sub-card-detail">Since ${date}${statusText}</div>
                     <div class="sub-card-actions">
                         <button class="btn-manage" onclick="window.location.href='${portal.portalUrl}'">Manage Subscription</button>
                         <button class="btn-refund" onclick="requestRefund(this)">Request Refund</button>
