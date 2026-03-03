@@ -133,6 +133,7 @@
         }
 
         function renderResults(portals) {
+            console.log('[manage] renderResults — portals:', JSON.parse(JSON.stringify(portals)));
             const container = document.getElementById('results');
             const heading = portals.length > 1
                 ? 'We found multiple accounts. Choose which one to manage:'
@@ -181,6 +182,7 @@
             btn.textContent = 'Processing...';
 
             try {
+                console.log('[manage] Requesting refund for:', currentEmail);
                 const res = await fetch(FUNCTION_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -188,8 +190,10 @@
                 });
 
                 const data = await res.json();
+                console.log('[manage] Refund response:', res.status, data);
 
                 if (!res.ok) {
+                    console.warn('[manage] Refund error:', data.error);
                     errorMsg.textContent = data.error || 'Something went wrong. Please try again.';
                     errorMsg.style.display = 'block';
                     btn.disabled = false;
@@ -197,6 +201,7 @@
                     return;
                 }
 
+                console.log('[manage] Refund success:', data);
                 successMsg.textContent = data.message;
                 successMsg.style.display = 'block';
                 btn.textContent = 'Refunded';
@@ -227,6 +232,7 @@
             resultsContainer.style.display = 'none';
 
             try {
+                console.log('[manage] Looking up email:', currentEmail);
                 const res = await fetch(FUNCTION_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -234,8 +240,10 @@
                 });
 
                 const data = await res.json();
+                console.log('[manage] Lookup response:', res.status, data);
 
                 if (!res.ok) {
+                    console.warn('[manage] Lookup error:', data.error);
                     errorMsg.textContent = data.error || 'Something went wrong. Please try again.';
                     errorMsg.style.display = 'block';
                     btn.disabled = false;
@@ -247,6 +255,7 @@
                 btn.disabled = false;
                 btn.textContent = 'Manage Subscription';
             } catch (err) {
+                console.error('[manage] Lookup failed:', err);
                 errorMsg.textContent = 'Something went wrong. Please try again.';
                 errorMsg.style.display = 'block';
                 btn.disabled = false;
