@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Subscription | Brainrot</title>
+    <meta name="description" content="Manage your Brainrot subscription, update payment details, or cancel.">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- favicon -->
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+
+    <!-- canonical url -->
+    <link rel="canonical" href="https://thebrainrotapp.com/manage.html">
+
+    <!-- stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="site-header">
+        <div class="header-container">
+            <a href="/" class="brand">
+                <img src="images/brainrot-icon.webp" alt="Brainrot icon" class="brand-icon">
+                <span class="brand-text">brainrot</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <main class="contact-content">
+            <h1 class="page-title" style="text-align:center;">Manage Your Subscription</h1>
+            <p class="contact-intro">Enter the email address you used to subscribe and we'll take you to your subscription management page.</p>
+
+            <div class="contact-form-container">
+                <form id="manage-form" class="contact-form">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required placeholder="you@example.com">
+                    </div>
+
+                    <p id="error-msg" style="color:#ff4757; text-align:center; display:none; font-weight:500;"></p>
+
+                    <button type="submit" class="submit-button" id="submit-btn">Manage Subscription</button>
+                </form>
+            </div>
+
+            <p style="text-align:center; margin-top:2rem; color:#888; font-size:0.9rem;">
+                Subscribed via the App Store? <a href="/cancel.html" style="color:#ff4757; font-weight:500;">Cancel through Apple instead.</a>
+            </p>
+        </main>
+    </div>
+
+    <footer>
+        <nav class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="terms.html">Terms</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+        <p class="copyright">&copy; 2025 Brainrot. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const FUNCTION_URL = 'https://tuueizexidbuvvgvxpms.supabase.co/functions/v1/manage-subscription';
+
+        document.getElementById('manage-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const btn = document.getElementById('submit-btn');
+            const errorMsg = document.getElementById('error-msg');
+            const email = document.getElementById('email').value.trim();
+
+            btn.disabled = true;
+            btn.textContent = 'Loading...';
+            errorMsg.style.display = 'none';
+
+            try {
+                const res = await fetch(FUNCTION_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email }),
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    errorMsg.textContent = data.error || 'Something went wrong. Please try again.';
+                    errorMsg.style.display = 'block';
+                    btn.disabled = false;
+                    btn.textContent = 'Manage Subscription';
+                    return;
+                }
+
+                // Redirect to Stripe Customer Portal
+                window.location.href = data.url;
+            } catch (err) {
+                errorMsg.textContent = 'Something went wrong. Please try again.';
+                errorMsg.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'Manage Subscription';
+            }
+        });
+    </script>
+</body>
+</html>
