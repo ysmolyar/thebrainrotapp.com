@@ -45,6 +45,8 @@
                 </form>
             </div>
 
+            <div id="subscriptions-list" style="display:none; max-width:500px; margin:2rem auto 0;"></div>
+
             <p style="text-align:center; margin-top:2rem; color:#888; font-size:0.9rem;">
                 Subscribed via the App Store? <a href="/cancel.html" style="color:#ff4757; font-weight:500;">Cancel through Apple instead.</a>
             </p>
@@ -61,8 +63,90 @@
         <p class="copyright">&copy; 2025 Brainrot. All rights reserved.</p>
     </footer>
 
+    <style>
+        .sub-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+        .sub-card:hover { border-color: #ff4757; }
+        .sub-info { flex: 1; }
+        .sub-name { font-weight: 600; font-size: 1.05rem; margin-bottom: 0.25rem; }
+        .sub-detail { color: #888; font-size: 0.85rem; }
+        .sub-status {
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .sub-status.active { background: #e8f5e9; color: #2e7d32; }
+        .sub-status.canceled { background: #fce4ec; color: #c62828; }
+        .sub-status.past_due { background: #fff3e0; color: #e65100; }
+        .sub-status.trialing { background: #e3f2fd; color: #1565c0; }
+        .sub-manage-btn {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 500;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+        .sub-manage-btn:hover { background: #000; transform: translateY(-2px); }
+        .subs-heading { text-align: center; margin-bottom: 1rem; font-size: 1rem; color: #555; }
+    </style>
     <script>
         const FUNCTION_URL = 'https://tuueizexidbuvvgvxpms.supabase.co/functions/v1/manage-subscription';
+
+        function formatAmount(amount, currency, interval) {
+            if (!amount) return '';
+            const sym = currency === 'usd' ? '$' : currency.toUpperCase() + ' ';
+            const per = interval ? '/' + interval : '';
+            return sym + amount + per;
+        }
+
+        function formatStatus(status) {
+            const labels = { active: 'Active', canceled: 'Canceled', past_due: 'Past Due', trialing: 'Trial', incomplete: 'Incomplete' };
+            return labels[status] || status;
+        }
+
+        function renderSubscriptions(subs) {
+            const container = document.getElementById('subscriptions-list');
+            container.innerHTML = '<p class="subs-heading">We found multiple subscriptions. Choose which one to manage:</p>';
+
+            subs.forEach(sub => {
+                const card = document.createElement('div');
+                card.className = 'sub-card';
+
+                const price = formatAmount(sub.amount, sub.currency, sub.interval);
+                const statusClass = sub.status.replace('_', '-');
+
+                card.innerHTML = `
+                    <div class="sub-info">
+                        <div class="sub-name">${sub.productName}</div>
+                        <div class="sub-detail">
+                            ${price ? price + ' &middot; ' : ''}
+                            <span class="sub-status ${statusClass}">${formatStatus(sub.status)}</span>
+                        </div>
+                    </div>
+                    <button class="sub-manage-btn" onclick="window.location.href='${sub.portalUrl}'">Manage</button>
+                `;
+                container.appendChild(card);
+            });
+
+            container.style.display = 'block';
+        }
 
         document.getElementById('manage-form').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -70,10 +154,12 @@
             const btn = document.getElementById('submit-btn');
             const errorMsg = document.getElementById('error-msg');
             const email = document.getElementById('email').value.trim();
+            const subsList = document.getElementById('subscriptions-list');
 
             btn.disabled = true;
             btn.textContent = 'Loading...';
             errorMsg.style.display = 'none';
+            subsList.style.display = 'none';
 
             try {
                 const res = await fetch(FUNCTION_URL, {
@@ -92,8 +178,16 @@
                     return;
                 }
 
-                // Redirect to Stripe Customer Portal
-                window.location.href = data.url;
+                // Single subscription or no subs — redirect directly
+                if (data.url && (!data.subscriptions || data.subscriptions.length <= 1)) {
+                    window.location.href = data.url;
+                    return;
+                }
+
+                // Multiple subscriptions — show picker
+                renderSubscriptions(data.subscriptions);
+                btn.disabled = false;
+                btn.textContent = 'Manage Subscription';
             } catch (err) {
                 errorMsg.textContent = 'Something went wrong. Please try again.';
                 errorMsg.style.display = 'block';
