@@ -124,6 +124,14 @@
         const FUNCTION_URL = 'https://tuueizexidbuvvgvxpms.supabase.co/functions/v1/manage-subscription';
         let currentEmail = '';
 
+        function trackEvent(event, metadata) {
+            fetch(FUNCTION_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: currentEmail, action: 'track', event, metadata }),
+            }).catch(() => {});
+        }
+
         function renderResults(portals) {
             const container = document.getElementById('results');
             const heading = portals.length > 1
@@ -149,7 +157,7 @@
                     <div class="sub-card-header">${label}</div>
                     <div class="sub-card-detail">Since ${date}${statusText}</div>
                     <div class="sub-card-actions">
-                        <button class="btn-manage" onclick="window.location.href='${portal.portalUrl}'">Manage Subscription</button>
+                        <button class="btn-manage" onclick="trackEvent('manage_click'); window.location.href='${portal.portalUrl}'">Manage Subscription</button>
                         <button class="btn-refund" onclick="requestRefund(this)">Request Refund</button>
                     </div>
                 `;
