@@ -30,7 +30,7 @@
     <div class="container">
         <main class="contact-content">
             <h1 class="page-title" style="text-align:center;">Manage Your Subscription</h1>
-            <p class="contact-intro">Enter the email address you used to subscribe and we'll take you to your subscription management page.</p>
+            <p class="contact-intro">Enter the email address you used to subscribe and we'll help you manage your subscription.</p>
 
             <div class="contact-form-container">
                 <form id="manage-form" class="contact-form">
@@ -40,12 +40,13 @@
                     </div>
 
                     <p id="error-msg" style="color:#ff4757; text-align:center; display:none; font-weight:500;"></p>
+                    <p id="success-msg" style="color:#2e7d32; text-align:center; display:none; font-weight:500;"></p>
 
                     <button type="submit" class="submit-button" id="submit-btn">Manage Subscription</button>
                 </form>
             </div>
 
-            <div id="subscriptions-list" style="display:none; max-width:500px; margin:2rem auto 0;"></div>
+            <div id="results" style="display:none; max-width:500px; margin:2rem auto 0;"></div>
 
             <p style="text-align:center; margin-top:2rem; color:#888; font-size:0.9rem;">
                 Subscribed via the App Store? <a href="/cancel.html" style="color:#ff4757; font-weight:500;">Cancel through Apple instead.</a>
@@ -69,16 +70,23 @@
             border-radius: 12px;
             padding: 1.25rem;
             margin-bottom: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
         }
-        .sub-card:hover { border-color: #ff4757; }
-        .sub-info { flex: 1; }
-        .sub-name { font-weight: 600; font-size: 1.05rem; margin-bottom: 0.25rem; }
-        .sub-detail { color: #888; font-size: 0.85rem; }
-        .sub-manage-btn {
+        .sub-card-header {
+            font-weight: 600;
+            font-size: 1.05rem;
+            margin-bottom: 0.25rem;
+        }
+        .sub-card-detail {
+            color: #888;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+        .sub-card-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .btn-manage {
             background: #ff4757;
             color: white;
             border: none;
@@ -88,29 +96,54 @@
             font-family: inherit;
             font-weight: 500;
             font-size: 0.9rem;
-            white-space: nowrap;
             transition: all 0.3s ease;
         }
-        .sub-manage-btn:hover { background: #000; transform: translateY(-2px); }
-        .subs-heading { text-align: center; margin-bottom: 1rem; font-size: 1rem; color: #555; }
+        .btn-manage:hover { background: #000; transform: translateY(-2px); }
+        .btn-refund {
+            background: white;
+            color: #ff4757;
+            border: 1.5px solid #ff4757;
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        .btn-refund:hover { background: #ff4757; color: white; transform: translateY(-2px); }
+        .btn-refund:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .results-heading {
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            color: #555;
+        }
     </style>
     <script>
         const FUNCTION_URL = 'https://tuueizexidbuvvgvxpms.supabase.co/functions/v1/manage-subscription';
+        let currentEmail = '';
 
-        function renderPortals(portals) {
-            const container = document.getElementById('subscriptions-list');
-            container.innerHTML = '<p class="subs-heading">We found multiple accounts. Choose which one to manage:</p>';
+        function renderResults(portals) {
+            const container = document.getElementById('results');
+            const heading = portals.length > 1
+                ? 'We found multiple accounts. Choose which one to manage:'
+                : 'We found your account:';
+            container.innerHTML = `<p class="results-heading">${heading}</p>`;
 
             portals.forEach((portal, i) => {
                 const card = document.createElement('div');
                 card.className = 'sub-card';
                 const date = new Date(portal.created * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                const label = portals.length > 1 ? `Account ${i + 1}` : 'Your Subscription';
+
                 card.innerHTML = `
-                    <div class="sub-info">
-                        <div class="sub-name">Account ${i + 1}</div>
-                        <div class="sub-detail">Created ${date}</div>
+                    <div class="sub-card-header">${label}</div>
+                    <div class="sub-card-detail">Created ${date}</div>
+                    <div class="sub-card-actions">
+                        <button class="btn-manage" onclick="window.location.href='${portal.portalUrl}'">Manage Subscription</button>
+                        <button class="btn-refund" onclick="requestRefund(this)">Request Refund</button>
                     </div>
-                    <button class="sub-manage-btn" onclick="window.location.href='${portal.portalUrl}'">Manage</button>
                 `;
                 container.appendChild(card);
             });
@@ -118,24 +151,70 @@
             container.style.display = 'block';
         }
 
-        document.getElementById('manage-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        async function requestRefund(btn) {
+            if (!confirm('This will cancel your subscription immediately and refund your most recent charge. Are you sure?')) {
+                return;
+            }
 
-            const btn = document.getElementById('submit-btn');
             const errorMsg = document.getElementById('error-msg');
-            const email = document.getElementById('email').value.trim();
-            const subsList = document.getElementById('subscriptions-list');
+            const successMsg = document.getElementById('success-msg');
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'none';
 
             btn.disabled = true;
-            btn.textContent = 'Loading...';
-            errorMsg.style.display = 'none';
-            subsList.style.display = 'none';
+            btn.textContent = 'Processing...';
 
             try {
                 const res = await fetch(FUNCTION_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email }),
+                    body: JSON.stringify({ email: currentEmail, action: 'refund' }),
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    errorMsg.textContent = data.error || 'Something went wrong. Please try again.';
+                    errorMsg.style.display = 'block';
+                    btn.disabled = false;
+                    btn.textContent = 'Request Refund';
+                    return;
+                }
+
+                successMsg.textContent = data.message;
+                successMsg.style.display = 'block';
+                btn.textContent = 'Refunded';
+
+                // Hide the results since subscription is canceled
+                document.getElementById('results').style.display = 'none';
+            } catch (err) {
+                errorMsg.textContent = 'Something went wrong. Please try again.';
+                errorMsg.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'Request Refund';
+            }
+        }
+
+        document.getElementById('manage-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const btn = document.getElementById('submit-btn');
+            const errorMsg = document.getElementById('error-msg');
+            const successMsg = document.getElementById('success-msg');
+            const resultsContainer = document.getElementById('results');
+            currentEmail = document.getElementById('email').value.trim();
+
+            btn.disabled = true;
+            btn.textContent = 'Loading...';
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'none';
+            resultsContainer.style.display = 'none';
+
+            try {
+                const res = await fetch(FUNCTION_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: currentEmail }),
                 });
 
                 const data = await res.json();
@@ -148,14 +227,7 @@
                     return;
                 }
 
-                // Single customer — redirect directly
-                if (data.url) {
-                    window.location.href = data.url;
-                    return;
-                }
-
-                // Multiple customers — show picker
-                renderPortals(data.portals);
+                renderResults(data.portals);
                 btn.disabled = false;
                 btn.textContent = 'Manage Subscription';
             } catch (err) {
