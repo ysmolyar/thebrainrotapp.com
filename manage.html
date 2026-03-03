@@ -78,18 +78,6 @@
         .sub-info { flex: 1; }
         .sub-name { font-weight: 600; font-size: 1.05rem; margin-bottom: 0.25rem; }
         .sub-detail { color: #888; font-size: 0.85rem; }
-        .sub-status {
-            display: inline-block;
-            padding: 0.15rem 0.5rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-        .sub-status.active { background: #e8f5e9; color: #2e7d32; }
-        .sub-status.canceled { background: #fce4ec; color: #c62828; }
-        .sub-status.past_due { background: #fff3e0; color: #e65100; }
-        .sub-status.trialing { background: #e3f2fd; color: #1565c0; }
         .sub-manage-btn {
             background: #ff4757;
             color: white;
@@ -109,38 +97,20 @@
     <script>
         const FUNCTION_URL = 'https://tuueizexidbuvvgvxpms.supabase.co/functions/v1/manage-subscription';
 
-        function formatAmount(amount, currency, interval) {
-            if (!amount) return '';
-            const sym = currency === 'usd' ? '$' : currency.toUpperCase() + ' ';
-            const per = interval ? '/' + interval : '';
-            return sym + amount + per;
-        }
-
-        function formatStatus(status) {
-            const labels = { active: 'Active', canceled: 'Canceled', past_due: 'Past Due', trialing: 'Trial', incomplete: 'Incomplete' };
-            return labels[status] || status;
-        }
-
-        function renderSubscriptions(subs) {
+        function renderPortals(portals) {
             const container = document.getElementById('subscriptions-list');
-            container.innerHTML = '<p class="subs-heading">We found multiple subscriptions. Choose which one to manage:</p>';
+            container.innerHTML = '<p class="subs-heading">We found multiple accounts. Choose which one to manage:</p>';
 
-            subs.forEach(sub => {
+            portals.forEach((portal, i) => {
                 const card = document.createElement('div');
                 card.className = 'sub-card';
-
-                const price = formatAmount(sub.amount, sub.currency, sub.interval);
-                const statusClass = sub.status.replace('_', '-');
-
+                const date = new Date(portal.created * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                 card.innerHTML = `
                     <div class="sub-info">
-                        <div class="sub-name">${sub.productName}</div>
-                        <div class="sub-detail">
-                            ${price ? price + ' &middot; ' : ''}
-                            <span class="sub-status ${statusClass}">${formatStatus(sub.status)}</span>
-                        </div>
+                        <div class="sub-name">Account ${i + 1}</div>
+                        <div class="sub-detail">Created ${date}</div>
                     </div>
-                    <button class="sub-manage-btn" onclick="window.location.href='${sub.portalUrl}'">Manage</button>
+                    <button class="sub-manage-btn" onclick="window.location.href='${portal.portalUrl}'">Manage</button>
                 `;
                 container.appendChild(card);
             });
@@ -178,14 +148,14 @@
                     return;
                 }
 
-                // Single subscription or no subs — redirect directly
-                if (data.url && (!data.subscriptions || data.subscriptions.length <= 1)) {
+                // Single customer — redirect directly
+                if (data.url) {
                     window.location.href = data.url;
                     return;
                 }
 
-                // Multiple subscriptions — show picker
-                renderSubscriptions(data.subscriptions);
+                // Multiple customers — show picker
+                renderPortals(data.portals);
                 btn.disabled = false;
                 btn.textContent = 'Manage Subscription';
             } catch (err) {
