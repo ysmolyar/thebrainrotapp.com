@@ -113,6 +113,18 @@
         }
         .btn-refund:hover { background: #ff4757; color: white; transform: translateY(-2px); }
         .btn-refund:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .sub-status {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.2rem 0.6rem;
+            border-radius: 50px;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+        }
+        .sub-status.active { background: #e8f5e9; color: #2e7d32; }
+        .sub-status.trialing { background: #e3f2fd; color: #1565c0; }
+        .sub-status.canceled { background: #fce4ec; color: #c62828; }
         .results-heading {
             text-align: center;
             margin-bottom: 1rem;
@@ -153,13 +165,18 @@
                     label = portals.length > 1 ? `Account ${i + 1}` : 'Your Subscription';
                 }
 
-                const statusText = portal.subStatus === 'trialing' ? ' · Trial' : '';
+                const statusLabel = portal.subStatus === 'active' ? 'Active'
+                    : portal.subStatus === 'trialing' ? 'Trial'
+                    : portal.subStatus === 'canceled' ? 'Canceled' : '';
+                const statusClass = portal.subStatus || '';
+                const statusBadge = statusLabel ? `<span class="sub-status ${statusClass}">${statusLabel}</span>` : '';
+
                 card.innerHTML = `
-                    <div class="sub-card-header">${label}</div>
-                    <div class="sub-card-detail">Since ${date}${statusText}</div>
+                    <div class="sub-card-header">${label}${statusBadge}</div>
+                    <div class="sub-card-detail">Since ${date}</div>
                     <div class="sub-card-actions">
                         <button class="btn-manage" onclick="trackEvent('manage_click'); window.location.href='${portal.portalUrl}'">Manage Subscription</button>
-                        <button class="btn-refund" onclick="requestRefund(this)">Request Refund</button>
+                        ${portal.canRefund ? '<button class="btn-refund" onclick="requestRefund(this)">Request Refund</button>' : ''}
                     </div>
                 `;
                 container.appendChild(card);
